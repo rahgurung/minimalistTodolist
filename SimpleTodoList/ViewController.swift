@@ -14,7 +14,10 @@ class ViewController: UITableViewController {
     // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForTodo))
+        let prompTodoButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapPromptForTodo))
+        let shareTodoButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShare))
+
+        navigationItem.rightBarButtonItems = [prompTodoButton, shareTodoButton]
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -29,7 +32,7 @@ class ViewController: UITableViewController {
 
     // MARK: - Private methods
     @objc
-    private func promptForTodo() {
+    private func didTapPromptForTodo() {
         let todoPromptController = UIAlertController(title: "Enter todo", message: nil, preferredStyle: .alert)
         todoPromptController.addTextField()
         let submitAction = UIAlertAction(title: "Submit", style: .default) {
@@ -39,6 +42,14 @@ class ViewController: UITableViewController {
         }
         todoPromptController.addAction(submitAction)
         present(todoPromptController, animated: true)
+    }
+    
+    @objc
+    func didTapShare() {
+        let todoListString = todos.joined(separator: "\n")
+        let vc = UIActivityViewController(activityItems: [todoListString], applicationActivities: [])
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(vc, animated: true)
     }
     
     private func addTodo(_ todo: String) {
